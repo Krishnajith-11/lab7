@@ -27,7 +27,7 @@ pipeline {
         stage('Wait for API') {
             steps {
                 sh '''
-                timeout=30
+                timeout=60
                 until curl -s -o /dev/null -w "%{http_code}" http://localhost:$PORT/health | grep -q 200; do
                     if [ $timeout -le 0 ]; then
                         echo "API did not start"
