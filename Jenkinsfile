@@ -46,7 +46,7 @@ pipeline {
                 sh '''
                 response=$(curl -s -X POST http://host.docker.internal:$PORT/predict \
                 -H "Content-Type: application/json" \
-                -d @right.json)
+                -d @valid.json)
 
                 echo "Valid Response: $response"
                 '''
@@ -59,7 +59,7 @@ pipeline {
                 status=$(curl -s -o /dev/null -w "%{http_code}" \
                 -X POST http://host.docker.internal:$PORT/predict \
                 -H "Content-Type: application/json" \
-                -d @wrong.json)
+                -d @invalid.json)
 
                 if [ "$status" -eq 200 ]; then
                     echo "Invalid input should not return 200"
