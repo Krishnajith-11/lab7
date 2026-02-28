@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = "kj3748/lab6-model:latest"
-        CONTAINER_NAME = "2022bcs0037-test-container"
+        IMAGE_NAME = "arjun22bcs60/ml-model:latest"
+        CONTAINER_NAME = "2022bcs0060-test-container"
         PORT = "8000"
     }
 
@@ -27,9 +27,9 @@ pipeline {
         stage('Wait for API') {
             steps {
                 sh '''
-                timeout=60
-                until curl -s -o /dev/null -w "%{http_code}" http://localhost:$PORT/health | grep -q 200; do
-                    if [ $timeout -le 0 ]; then
+                timeout=30
+                until curl -s -o /dev/null -w "%{http_code}" http://host.docker.internal:$PORT/health | grep -q 200; do
+                    if [ $timeout -le- 0 ]; then
                         echo "API did not start"
                         exit 1
                     fi
@@ -44,7 +44,7 @@ pipeline {
         stage('Valid Request') {
             steps {
                 sh '''
-                response=$(curl -s -X POST http://localhost:$PORT/predict \
+                response=$(curl -s -X POST http://host.docker.internal:$PORT/predict \
                 -H "Content-Type: application/json" \
                 -d @valid.json)
 
@@ -57,7 +57,7 @@ pipeline {
             steps {
                 sh '''
                 status=$(curl -s -o /dev/null -w "%{http_code}" \
-                -X POST http://localhost:$PORT/predict \
+                -X POST http://host.docker.internal:$PORT/predict \
                 -H "Content-Type: application/json" \
                 -d @invalid.json)
 
