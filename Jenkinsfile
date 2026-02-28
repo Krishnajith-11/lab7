@@ -28,7 +28,7 @@ pipeline {
             steps {
                 sh '''
                 timeout=30
-                until curl -s -o /dev/null -w "%{http_code}" http://host.docker.internal:$PORT/health | grep -q 200; do
+                until curl -s -o /dev/null -w "%{http_code}" http://localhost:$PORT/health | grep -q 200; do
                     if [ $timeout -le 0 ]; then
                         echo "API did not start"
                         exit 1
@@ -44,7 +44,7 @@ pipeline {
         stage('Valid Request') {
             steps {
                 sh '''
-                response=$(curl -s -X POST http://host.docker.internal:$PORT/predict \
+                response=$(curl -s -X POST http://localhost:$PORT/predict \
                 -H "Content-Type: application/json" \
                 -d @valid.json)
 
@@ -57,7 +57,7 @@ pipeline {
             steps {
                 sh '''
                 status=$(curl -s -o /dev/null -w "%{http_code}" \
-                -X POST http://host.docker.internal:$PORT/predict \
+                -X POST http://localhost:$PORT/predict \
                 -H "Content-Type: application/json" \
                 -d @invalid.json)
 
