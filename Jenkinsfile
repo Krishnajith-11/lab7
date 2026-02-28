@@ -29,7 +29,7 @@ pipeline {
                 sh '''
                 timeout=30
                 until curl -s -o /dev/null -w "%{http_code}" http://host.docker.internal:$PORT/health | grep -q 200; do
-                    if [ $timeout -le- 0 ]; then
+                    if [ $timeout -le 0 ]; then
                         echo "API did not start"
                         exit 1
                     fi
@@ -81,7 +81,7 @@ pipeline {
 
     post {
         always {
-            sh 'docker rm -f $CONTAINER || true'
+            sh 'docker rm -f $CONTAINER_NAME || true'
         }
     }
 }
